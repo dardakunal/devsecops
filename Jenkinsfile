@@ -19,5 +19,12 @@ pipeline {
                       }
                  }   
              }
+        stage('Docker Build and Push') {
+            steps {
+              docker.withRegistry([crdentialId: "dockerhub", url: ""])
+              sh 'docker build -t dardakunal/numapp:""$GIT_COMMIT"" .'
+              sh 'docker push dardakunal/numapp:""$GIT_COMMIT""'
+            }
+        }
     }
 }
