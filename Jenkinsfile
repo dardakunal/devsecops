@@ -2,6 +2,12 @@ pipeline {
   agent any
 
   stages {
+      stage('Checkout') {
+            steps{
+                git branch: 'main', url: 'https://github.com/dardakunal/devsecops.git'
+            }
+          
+      }
       stage('Build Artifact') {
             steps {
               sh "mvn clean package -DskipTests=true"
@@ -20,11 +26,15 @@ pipeline {
                  }   
              }
         stage('Docker Build and Push') {
+         
             steps {
-              docker.withRegistry([credentialId: "dockerhub", url: ""])
-              sh 'docker build -t dardakunal/numapp:""$GIT_COMMIT"" .'
-              sh 'docker push dardakunal/numapp:""$GIT_COMMIT""'
+            withDockerRegistry([credentialsId: "dockerhub", url: ""]) {
+                sh 'printenv'
+              sh 'sudo docker build -t dardakunal/numeric-app:""$BUILD_ID"" .'
+              sh 'docker push dardakunal/numeric-app:""$BUILD_ID""'
+            }
             }
         }
-    }
+    
+}
 }
