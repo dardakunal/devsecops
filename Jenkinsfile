@@ -35,6 +35,16 @@ pipeline {
             }
             }
         }
+        
+        stage('K8S deployment-DEV') {
+             steps {
+               withKubeConfig([credentialsId: 'kubeconfig'])  {
+                   sh "sed -i 's#replace#dardakunal/numeric-app:${BUILD_ID}#g' k8s_deployment_service.yaml"
+                   sh "kubectl apply -f k8s_deployment_service.yaml"
+          
+            }
+            }
+        }
     
 }
 }
